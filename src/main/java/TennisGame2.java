@@ -1,10 +1,8 @@
 
 public class TennisGame2 implements TennisGame {
-    public int p1Point = 0;
-    public int p2Point = 0;
+    public  int p1Point = 0;
+    public  int p2Point = 0;
 
-    public String p1Res = "";
-    public String p2Res = "";
     private String player1Name;
     private String player2Name;
 
@@ -15,109 +13,70 @@ public class TennisGame2 implements TennisGame {
 
     public String getScore() {
         String score = "";
-        if (p1Point == p2Point && p1Point < 4) {
-            if (p1Point == 0)
-                score = "Love";
-            if (p1Point == 1)
-                score = "Fifteen";
-            if (p1Point == 2)
-                score = "Thirty";
-            score += "-All";
-        }
-        if (p1Point == p2Point && p1Point >= 3)
-            score = "Deuce";
 
-        if (p1Point > 0 && p2Point == 0) {
-            if (p1Point == 1)
-                p1Res = "Fifteen";
-            if (p1Point == 2)
-                p1Res = "Thirty";
-            if (p1Point == 3)
-                p1Res = "Forty";
-
-            p2Res = "Love";
-            score = p1Res + "-" + p2Res;
-        }
-        if (p2Point > 0 && p1Point == 0) {
-            if (p2Point == 1)
-                p2Res = "Fifteen";
-            if (p2Point == 2)
-                p2Res = "Thirty";
-            if (p2Point == 3)
-                p2Res = "Forty";
-
-            p1Res = "Love";
-            score = p1Res + "-" + p2Res;
+        if (equals()) {
+            score = equalsScore(p1Point);
+        } else if (selectionAdvange()) {
+            score = advantagePlayers(p1Point, p2Point);
+        }else{
+            score = moveScore(p1Point) + "-" + moveScore(p2Point);
         }
 
-        if (p1Point > p2Point && p1Point < 4) {
-            if (p1Point == 2)
-                p1Res = "Thirty";
-            if (p1Point == 3)
-                p1Res = "Forty";
-            if (p2Point == 1)
-                p2Res = "Fifteen";
-            if (p2Point == 2)
-                p2Res = "Thirty";
-            score = p1Res + "-" + p2Res;
-        }
-        if (p2Point > p1Point && p2Point < 4) {
-            if (p2Point == 2)
-                p2Res = "Thirty";
-            if (p2Point == 3)
-                p2Res = "Forty";
-            if (p1Point == 1)
-                p1Res = "Fifteen";
-            if (p1Point == 2)
-                p1Res = "Thirty";
-            score = p1Res + "-" + p2Res;
-        }
-
-        if (p1Point > p2Point && p2Point >= 3) {
-            score = "Advantage player1";
-        }
-
-        if (p2Point > p1Point && p1Point >= 3) {
-            score = "Advantage player2";
-        }
-
-        if (p1Point >= 4 && p2Point >= 0 && (p1Point - p2Point) >= 2) {
-            score = "Win for player1";
-        }
-        if (p2Point >= 4 && p1Point >= 0 && (p2Point - p1Point) >= 2) {
-            score = "Win for player2";
-        }
         return score;
     }
 
-    public void SetP1Score(int number) {
-
-        for (int i = 0; i < number; i++) {
-            P1Score();
-        }
-
+    private String moveScore(int pointPlayer){
+        String score[]={"Love","Fifteen", "Thirty", "Forty"};
+        return score[pointPlayer];
     }
 
-    public void SetP2Score(int number) {
-
-        for (int i = 0; i < number; i++) {
-            P2Score();
+    private String advantagePlayers(int pointPlayer1, int pointPlayer2) {
+        int minusResult = pointPlayer1 - pointPlayer2;
+        switch (minusResult) {
+            case 1:
+                return advantagePlayer(this.player1Name);
+            case -1:
+                return advantagePlayer(this.player2Name);
+            default:
+                return playerWin(minusResult);
         }
-
     }
 
-    public void P1Score() {
+    private String advantagePlayer(String playerName) {
+        return "Advantage " + playerName;
+    }
+
+    private String playerWin(int minusResult) {
+        return minusResult >= 2 ? "Win for " + this.player1Name : "Win for " + this.player2Name;
+    }
+
+    private boolean selectionAdvange() {
+        return (p1Point >= 4 || p2Point >= 4);
+    }
+
+    private boolean equals() {
+        return (p1Point == p2Point);
+    }
+
+    private String equalsScore(int pointPlayer) {
+        String score[] = {"Love-All", "Fifteen-All", "Thirty-All", "Deuce", "Deuce"};
+        return score[pointPlayer];
+    }
+
+    public void p1Score() {
         p1Point++;
     }
 
-    public void P2Score() {
+    public void p2Score() {
         p2Point++;
     }
 
     public void wonPoint(String player) {
-        if (player == "player1")
-            P1Score();
-        else
-            P2Score();
+        if (player.equals("player1")) {
+            p1Score();
+        } else {
+            p2Score();
+        }
+
     }
 }
